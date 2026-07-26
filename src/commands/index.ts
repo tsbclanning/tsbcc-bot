@@ -17,7 +17,7 @@ import { mycodeCommand } from './mainer/mycode.js';
 import { coderesetCommand } from './mainer/codereset.js';
 import { myclanmainersCommand } from './mainer/myclanmainers.js';
 import { myclansmainsCommand } from './mainer/myclansmains.js';
-import { wareligibleCommand } from './mainer/wareligible.js';
+import { wareligibleCommand as checkCommand } from './mainer/wareligible.js';
 import { scorematchCommand } from './war/scorematch.js';
 import { refreshCommand } from './war/refresh.js';
 import { checkwarnsCommand } from './moderation/checkwarns.js';
@@ -58,7 +58,7 @@ export const commands: Command[] = [
   coderesetCommand,
   myclanmainersCommand,
   myclansmainsCommand,
-  wareligibleCommand,
+  checkCommand,
 
   // War
   scorematchCommand,
