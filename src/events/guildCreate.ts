@@ -7,7 +7,6 @@ import { config } from '../config/index.js';
 import { buildVerificationDMEmbed } from '../utils/embeds.js';
 
 export async function execute(guild: Guild, client: Client): Promise<void> {
-  // Check if this is a clan verification join
   const verification = await Verification.findOne({
     serverId: guild.id,
     status: 'PENDING',
@@ -21,26 +20,46 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
 
   logger.info(`Bot joined clan server ${guild.name} (${guild.id}) for verification of clan ${verification.clanName}`);
 
-  const memberCount = guild.memberCount;
-  verification.memberCount = memberCount;
+  // Fetch all members to check for bots
+  await guild.members.fetch();
+  const totalMembers = guild.memberCount;
+  const botMembers = guild.members.cache.filter((m) => m.user.bot).size;
+  const realMembers = totalMembers - botMembers;
+
+  verification.memberCount = realMembers;
   await verification.save();
 
-  // Check minimum member requirement
-  if (memberCount < config.settings.minClanMembers) {
+  logger.info(`Verification check: ${guild.name} — ${totalMembers} total, ${botMembers} bots, ${realMembers} real members`);
+
+  // Anti-bot check: if more than 10% are bots, deny
+  const botPercentage = totalMembers > 0 ? (botMembers / totalMembers) * 100 : 100;
+  if (botPercentage > 10) {
     try {
       const owner = await client.users.fetch(verification.ownerId);
-      await owner.send(`❌ Your clan **${verification.clanName}** could not be verified. Your server has ${memberCount} members, but the minimum is ${config.settings.minClanMembers}.`);
+      await owner.send(`❌ Your clan **${verification.clanName}** could not be verified. Your server has too many bot accounts (${botMembers} bots out of ${totalMembers} members). Please remove bot accounts and try again.`);
     } catch { /* DM failed */ }
+    verification.status = 'DENIED';
+    await verification.save();
     await guild.leave();
     return;
   }
 
-  // Bot leaves after checking
-  await guild.leave();
-  logger.info(`Verification check complete for ${verification.clanName} (${memberCount} members). Bot left the clan server.`);
+  // Check minimum real member requirement
+  if (realMembers < config.settings.minClanMembers) {
+    try {
+      const owner = await client.users.fetch(verification.ownerId);
+      await owner.send(`❌ Your clan **${verification.clanName}** could not be verified. Your server has ${realMembers} real members (excluding ${botMembers} bots), but the minimum is ${config.settings.minClanMembers}.`);
+    } catch { /* DM failed */ }
+    verification.status = 'DENIED';
+    await verification.save();
+    await guild.leave();
+    return;
+  }
 
-  // Create the clan if verification is approved by mods
-  // For now, auto-approve (mods can deny later)
+  // Auto-approve — 100+ real members, not many bots
+  await guild.leave();
+  logger.info(`Verification check complete for ${verification.clanName} (${realMembers} real members, ${botMembers} bots). Auto-approved. Bot left the clan server.`);
+
   verification.status = 'APPROVED';
   await verification.save();
 
@@ -54,6 +73,8 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
     regions: [{
       region: verification.region,
       rank: await getNextRank(verification.region),
+      warManager: null,
+      regionLead: null,
     }],
   });
 
