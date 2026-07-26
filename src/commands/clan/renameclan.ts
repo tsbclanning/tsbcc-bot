@@ -1,8 +1,8 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } from 'discord.js';
 import type { Command } from '../interface.js';
 import { Clan } from '../../database/models/Clan.js';
+import { config } from '../../config/index.js';
 import { isAdmin } from '../../utils/permissions.js';
-import { ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
 export const renameclanCommand: Command = {
   data: new SlashCommandBuilder()
@@ -25,28 +25,35 @@ export const renameclanCommand: Command = {
       return;
     }
 
-    // Send approval request if not admin
-    if (!isAdmin(interaction.member as any)) {
-      const oldName = clan.name;
-      const approveBtn = new ButtonBuilder().setCustomId(`approve_rename:${clan.clanId}`).setLabel('Approve').setStyle(ButtonStyle.Success);
-      const denyBtn = new ButtonBuilder().setCustomId(`deny_rename:${clan.clanId}`).setLabel('Deny').setStyle(ButtonStyle.Danger);
-      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(approveBtn, denyBtn);
-
-      // Post in admin approval channel (use bot commands channel as fallback)
-      const channel = interaction.channel;
-      if (channel?.isTextBased()) {
-        await (channel as any).send({
-          content: `**Rename Request**\n**${oldName}** → **${newName}**\nRequested by: <@${interaction.user.id}>\nServer ID: ${serverId}`,
-          components: [row],
-        });
-      }
-      await interaction.reply({ content: 'Rename request sent for admin approval. Trolling rename requests will result in a strike.', ephemeral: true });
+    // Admin can directly rename
+    if (isAdmin(interaction.member as any)) {
+      clan.name = newName;
+      await clan.save();
+      await interaction.reply({ content: `Clan renamed to **${newName}**.`, ephemeral: true });
       return;
     }
 
-    // Admin can directly rename
-    clan.name = newName;
-    await clan.save();
-    await interaction.reply({ content: `Clan renamed to **${newName}**.`, ephemeral: true });
+    // Send approval request to mod-logs
+    const approveBtn = new ButtonBuilder().setCustomId(`approve_rename:${clan.clanId}`).setLabel('Approve').setStyle(ButtonStyle.Success);
+    const denyBtn = new ButtonBuilder().setCustomId(`deny_rename:${clan.clanId}`).setLabel('Deny').setStyle(ButtonStyle.Danger);
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(approveBtn, denyBtn);
+
+    const embed = new EmbedBuilder()
+      .setTitle('Rename Request — Needs Approval')
+      .addFields(
+        { name: 'Clan', value: clan.name, inline: true },
+        { name: 'New Name', value: newName, inline: true },
+        { name: 'Requested by', value: `<@${interaction.user.id}>`, inline: true },
+        { name: 'Server ID', value: serverId, inline: true },
+      )
+      .setColor(0xfee75c)
+      .setTimestamp();
+
+    const modLogsChannel = await interaction.client.channels.fetch(config.community.channels.modLogs).catch(() => null);
+    if (modLogsChannel?.isTextBased()) {
+      await (modLogsChannel as any).send({ embeds: [embed], components: [row] });
+    }
+
+    await interaction.reply({ content: 'Rename request sent to staff for approval. Trolling rename requests will result in a strike.', ephemeral: true });
   },
 };

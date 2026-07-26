@@ -1,9 +1,7 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } from 'discord.js';
 import type { Command } from '../interface.js';
-import { Warning } from '../../database/models/Warning.js';
 import { Clan } from '../../database/models/Clan.js';
-import { ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
-import { isAdmin } from '../../utils/permissions.js';
+import { config } from '../../config/index.js';
 
 export const requestCommand: Command = {
   data: new SlashCommandBuilder()
@@ -31,14 +29,22 @@ export const requestCommand: Command = {
     const denyBtn = new ButtonBuilder().setCustomId(`deny_request:${clan.clanId}:${type}`).setLabel('Deny').setStyle(ButtonStyle.Danger);
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(approveBtn, denyBtn);
 
-    const channel = interaction.channel;
-    if (channel?.isTextBased()) {
-      await (channel as any).send({
-        content: `**Clan Action Request**\nType: ${type}\nClan: ${clan.name}\nReason: ${reason}\nRequested by: <@${interaction.user.id}>`,
-        components: [row],
-      });
+    const embed = new EmbedBuilder()
+      .setTitle('Clan Action Request — Needs Approval')
+      .addFields(
+        { name: 'Type', value: type, inline: true },
+        { name: 'Clan', value: clan.name, inline: true },
+        { name: 'Requested by', value: `<@${interaction.user.id}>`, inline: true },
+        { name: 'Reason', value: reason, inline: false },
+      )
+      .setColor(0xfee75c)
+      .setTimestamp();
+
+    const modLogsChannel = await interaction.client.channels.fetch(config.community.channels.modLogs).catch(() => null);
+    if (modLogsChannel?.isTextBased()) {
+      await (modLogsChannel as any).send({ embeds: [embed], components: [row] });
     }
 
-    await interaction.reply({ content: 'Request submitted for staff approval.', ephemeral: true });
+    await interaction.reply({ content: 'Request submitted to staff for approval.', ephemeral: true });
   },
 };

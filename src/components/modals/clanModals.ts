@@ -1,6 +1,6 @@
-import type { ModalSubmitInteraction } from 'discord.js';
+import { ModalSubmitInteraction, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } from 'discord.js';
 import { Clan } from '../../database/models/Clan.js';
-import { ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { config } from '../../config/index.js';
 import { isAdmin } from '../../utils/permissions.js';
 import { logger } from '../../utils/logger.js';
 
@@ -20,21 +20,29 @@ export async function handleRenameClanModal(interaction: ModalSubmitInteraction)
     return;
   }
 
-  // Send approval request
+  // Send approval request to mod-logs
   const oldName = clan.name;
   const approveBtn = new ButtonBuilder().setCustomId(`approve_rename:${clan.clanId}`).setLabel('Approve').setStyle(ButtonStyle.Success);
   const denyBtn = new ButtonBuilder().setCustomId(`deny_rename:${clan.clanId}`).setLabel('Deny').setStyle(ButtonStyle.Danger);
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(approveBtn, denyBtn);
 
-  const channel = interaction.channel;
-  if (channel?.isTextBased()) {
-    await (channel as any).send({
-      content: `**Rename Request**\n**${oldName}** → **${newName}**\nRequested by: <@${interaction.user.id}>\nServer ID: ${clan.serverId}`,
-      components: [row],
-    });
+  const embed = new EmbedBuilder()
+    .setTitle('Rename Request — Needs Approval')
+    .addFields(
+      { name: 'Clan', value: oldName, inline: true },
+      { name: 'New Name', value: newName, inline: true },
+      { name: 'Requested by', value: `<@${interaction.user.id}>`, inline: true },
+      { name: 'Server ID', value: clan.serverId, inline: true },
+    )
+    .setColor(0xfee75c)
+    .setTimestamp();
+
+  const modLogsChannel = await interaction.client.channels.fetch(config.community.channels.modLogs).catch(() => null);
+  if (modLogsChannel?.isTextBased()) {
+    await (modLogsChannel as any).send({ embeds: [embed], components: [row] });
   }
 
-  await interaction.reply({ content: 'Rename request sent for admin approval. Trolling rename requests will result in a strike.', ephemeral: true });
+  await interaction.reply({ content: 'Rename request sent to staff for approval. Trolling rename requests will result in a strike.', ephemeral: true });
 }
 
 export async function handleSwitchOwnerModal(interaction: ModalSubmitInteraction): Promise<void> {
@@ -45,20 +53,28 @@ export async function handleSwitchOwnerModal(interaction: ModalSubmitInteraction
     return;
   }
 
-  // Send approval request
+  // Send approval request to mod-logs
   const approveBtn = new ButtonBuilder().setCustomId(`approve_owner:${clan.clanId}`).setLabel('Approve').setStyle(ButtonStyle.Success);
   const denyBtn = new ButtonBuilder().setCustomId(`deny_owner:${clan.clanId}`).setLabel('Deny').setStyle(ButtonStyle.Danger);
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(approveBtn, denyBtn);
 
-  const channel = interaction.channel;
-  if (channel?.isTextBased()) {
-    await (channel as any).send({
-      content: `**Owner Transfer Request**\nClan: ${clan.name}\nNew owner: <@${newOwnerId}>\nRequested by: <@${interaction.user.id}>`,
-      components: [row],
-    });
+  const embed = new EmbedBuilder()
+    .setTitle('Owner Transfer Request — Needs Approval')
+    .addFields(
+      { name: 'Clan', value: clan.name, inline: true },
+      { name: 'Current Owner', value: `<@${interaction.user.id}>`, inline: true },
+      { name: 'New Owner', value: `<@${newOwnerId}>`, inline: true },
+      { name: 'Server ID', value: clan.serverId, inline: true },
+    )
+    .setColor(0xfee75c)
+    .setTimestamp();
+
+  const modLogsChannel = await interaction.client.channels.fetch(config.community.channels.modLogs).catch(() => null);
+  if (modLogsChannel?.isTextBased()) {
+    await (modLogsChannel as any).send({ embeds: [embed], components: [row] });
   }
 
-  await interaction.reply({ content: 'Owner transfer request sent for admin approval.', ephemeral: true });
+  await interaction.reply({ content: 'Owner transfer request sent to staff for approval.', ephemeral: true });
 }
 
 export async function handleMergeClanModal(interaction: ModalSubmitInteraction): Promise<void> {
@@ -75,17 +91,25 @@ export async function handleMergeClanModal(interaction: ModalSubmitInteraction):
     return;
   }
 
-  // Merge: transfer all regions from source to target
-  for (const r of clan.regions) {
-    const existing = targetClan.regions.find((tr) => tr.region === r.region);
-    if (!existing) {
-      targetClan.regions.push(r);
-    }
-  }
-  await targetClan.save();
-  clan.status = 'DISBANDED';
-  await clan.save();
+  // Send approval request to mod-logs
+  const approveBtn = new ButtonBuilder().setCustomId(`approve_merge:${clan.clanId}|${targetClan.clanId}`).setLabel('Approve').setStyle(ButtonStyle.Success);
+  const denyBtn = new ButtonBuilder().setCustomId(`deny_merge:${clan.clanId}`).setLabel('Deny').setStyle(ButtonStyle.Danger);
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(approveBtn, denyBtn);
 
-  await interaction.reply({ content: `**${clan.name}** has been merged into **${targetClan.name}**. Use \`/refresh\` to update leaderboards.`, ephemeral: true });
-  logger.info(`Clan merge: ${clan.name} merged into ${targetClan.name}`);
+  const embed = new EmbedBuilder()
+    .setTitle('Clan Merge Request — Needs Approval')
+    .addFields(
+      { name: 'Source Clan', value: clan.name, inline: true },
+      { name: 'Target Clan', value: targetClan.name, inline: true },
+      { name: 'Requested by', value: `<@${interaction.user.id}>`, inline: true },
+    )
+    .setColor(0xfee75c)
+    .setTimestamp();
+
+  const modLogsChannel = await interaction.client.channels.fetch(config.community.channels.modLogs).catch(() => null);
+  if (modLogsChannel?.isTextBased()) {
+    await (modLogsChannel as any).send({ embeds: [embed], components: [row] });
+  }
+
+  await interaction.reply({ content: 'Merge request sent to staff for approval.', ephemeral: true });
 }

@@ -8,7 +8,7 @@ import { handleApproveScore, handleDenyScore } from '../components/buttons/score
 import { handleRobloxConfirmYes, handleRobloxConfirmNo, handleRobloxCheckCode } from '../components/buttons/robloxVerify.js';
 import { handleGoToServerButton } from '../components/buttons/goToServer.js';
 import { handleAcceptAssignment, handleDenyAssignment } from '../components/buttons/assignment.js';
-import { handleApproveRename, handleDenyRename, handleApproveOwner, handleDenyOwner } from '../components/buttons/approvals.js';
+import { handleApproveRename, handleDenyRename, handleApproveOwner, handleDenyOwner, handleApproveMerge, handleDenyMerge } from '../components/buttons/approvals.js';
 import { handleClanManagementSelect } from '../components/selects/clanManagement.js';
 import { handleChallengeFromSelect, handleChallengeTargetSelect } from '../components/selects/challenge.js';
 import { handleAssignRegionSelect, handleAssignClanSelect, handleRemoveAssignmentSelect } from '../components/selects/wmRl.js';
@@ -99,6 +99,10 @@ async function handleButton(interaction: ButtonInteraction): Promise<void> {
         await handleApproveOwner(interaction);
       } else if (interaction.customId.startsWith('deny_owner:')) {
         await handleDenyOwner(interaction);
+      } else if (interaction.customId.startsWith('approve_merge:')) {
+        await handleApproveMerge(interaction);
+      } else if (interaction.customId.startsWith('deny_merge:')) {
+        await handleDenyMerge(interaction);
       } else {
         logger.warn(`Unknown button customId: ${interaction.customId}`);
       }

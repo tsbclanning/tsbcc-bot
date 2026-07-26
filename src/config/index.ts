@@ -54,6 +54,7 @@ export const config = {
       clanManagement: process.env.CHANNEL_CLAN_MANAGEMENT ?? '',
       verification: process.env.CHANNEL_VERIFICATION ?? '',
       challengeRules: process.env.CHANNEL_CHALLENGE_RULES ?? '',
+      modLogs: process.env.CHANNEL_MOD_LOGS ?? '',
     },
   },
 
