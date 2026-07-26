@@ -18,6 +18,21 @@ export const config = {
       trialSupport: process.env.ROLE_TRIAL_SUPPORT ?? '',
       warPing: process.env.ROLE_WAR_PING ?? '',
       everyone: process.env.ROLE_EVERYONE ?? '@everyone',
+      // Clan & War Manager roles
+      globalClanLeader: process.env.ROLE_GLOBAL_CLAN_LEADER ?? '',
+      clanLeader: process.env.ROLE_CLAN_LEADER ?? '',
+      regionLead: process.env.ROLE_REGION_LEAD ?? '',
+      warManagerObserver: process.env.ROLE_WAR_MANAGER_OBSERVER_COMMUNITY ?? '',
+      experiencedWarManager: process.env.ROLE_EXPERIENCED_WAR_MANAGER ?? '',
+      trialWarManager: process.env.ROLE_TRIAL_WAR_MANAGER ?? '',
+      warManagementTeam: process.env.ROLE_WAR_MANAGEMENT_TEAM ?? '',
+      lbManager: process.env.ROLE_LB_MANAGER ?? '',
+      blacklistPerms: process.env.ROLE_BLACKLIST_PERMS ?? '',
+      observer: process.env.ROLE_OBSERVER ?? '',
+      // Referee roles
+      experiencedReferee: process.env.ROLE_EXPERIENCED_REFEREE ?? '',
+      trialReferee: process.env.ROLE_TRIAL_REFEREE ?? '',
+      onDutyReferee: process.env.ROLE_ON_DUTY_REFEREE ?? '',
     },
     channels: {
       clEu: process.env.CHANNEL_CL_EU ?? '',
@@ -45,18 +60,27 @@ export const config = {
   war: {
     guildId: process.env.WAR_GUILD_ID ?? '',
     roles: {
+      tsbgOwner: process.env.ROLE_TSBG_OWNER ?? '',
       tsbccAdmin: process.env.ROLE_TSBCC_ADMIN ?? '',
       warManagerObserver: process.env.ROLE_WAR_MANAGER_OBSERVER ?? '',
+      warManager: process.env.ROLE_WAR_MANAGER ?? '',
+      warManagementTeam: process.env.ROLE_WAR_MANAGEMENT_TEAM ?? '',
+      trialWarManager: process.env.ROLE_TRIAL_WAR_MANAGER_WM ?? '',
+      clanLeader: process.env.ROLE_CLAN_LEADER_WM ?? '',
+      clansWarManager: process.env.ROLE_CLANS_WAR_MANAGER ?? '',
+      regionLead: process.env.ROLE_REGION_LEAD_WM ?? '',
     },
     channels: {
       announcements: process.env.WAR_CHANNEL_ANNOUNCEMENTS ?? '',
       cwm: process.env.WAR_CHANNEL_CWM ?? '',
+      cwm2: process.env.WAR_CHANNEL_CWM2 ?? '',
       warTickets: process.env.WAR_CHANNEL_WAR_TICKETS ?? '',
       scoreLogs: process.env.WAR_CHANNEL_SCORE_LOGS ?? '',
       glad5v5Rules: process.env.WAR_CHANNEL_5V5_GLAD_RULES ?? '',
       general: process.env.WAR_CHANNEL_GENERAL ?? '',
       botCommands: process.env.WAR_CHANNEL_BOT_COMMANDS ?? '',
       blCheck: process.env.WAR_CHANNEL_BL_CHECK ?? '',
+      guide: process.env.WAR_CHANNEL_GUIDE ?? '',
     },
     ticketCategoryId: process.env.WAR_TICKET_CATEGORY_ID ?? '',
   },
@@ -85,10 +109,17 @@ export const ALL_STAFF_ROLES = [
   config.community.roles.seniorSupport,
   config.community.roles.supportStaff,
   config.community.roles.trialSupport,
+  config.war.roles.tsbgOwner,
+  config.war.roles.tsbccAdmin,
+  config.war.roles.warManagerObserver,
+  config.war.roles.warManager,
+  config.war.roles.warManagementTeam,
 ];
 
 export const ADMIN_ROLES = [
   config.community.roles.competitiveSupervisor,
   config.community.roles.seniorAdmin,
   config.community.roles.admin,
+  config.war.roles.tsbgOwner,
+  config.war.roles.tsbccAdmin,
 ];
