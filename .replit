@@ -1,0 +1,13 @@
+run = "npm install && node --import tsx src/index.ts"
+entrypoint = "src/index.ts"
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-23_11"
+
+[env]
+PORT = "8080"
+
+[[ports]]
+localPort = 8080
+externalPort = 80

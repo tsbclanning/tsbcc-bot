@@ -25,7 +25,7 @@ import { clearwarnsCommand } from './moderation/clearwarns.js';
 import { removestrikeCommand } from './moderation/removestrike.js';
 import { removewarnCommand } from './moderation/removewarn.js';
 import { requestCommand } from './moderation/request.js';
-import { blcheckCommand } from './moderation/blcheck.js';
+
 import { quotaLeaderboardCommand } from './quota/leaderboard.js';
 import { quotaUserCommand } from './quota/user.js';
 import { robloxVerifyCommand } from './roblox/verify.js';
@@ -70,7 +70,6 @@ export const commands: Command[] = [
   removestrikeCommand,
   removewarnCommand,
   requestCommand,
-  blcheckCommand,
 
   // Quota
   quotaLeaderboardCommand,

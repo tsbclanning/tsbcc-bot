@@ -81,6 +81,7 @@ export const config = {
       botCommands: process.env.WAR_CHANNEL_BOT_COMMANDS ?? '',
       blCheck: process.env.WAR_CHANNEL_BL_CHECK ?? '',
       guide: process.env.WAR_CHANNEL_GUIDE ?? '',
+      transcript: process.env.WAR_CHANNEL_TRANSCRIPT ?? '',
     },
     ticketCategoryId: process.env.WAR_TICKET_CATEGORY_ID ?? '',
   },
