@@ -1,0 +1,35 @@
+import type { Client } from 'discord.js';
+import { Events } from 'discord.js';
+import { logger } from '../utils/logger.js';
+import { execute as readyExecute } from './ready.js';
+import { execute as interactionExecute } from './interactionCreate.js';
+import { execute as guildCreateExecute } from './guildCreate.js';
+
+export function registerEvents(client: Client): void {
+  client.once(Events.ClientReady, (...args) => readyExecute(...args));
+
+  client.on(Events.InteractionCreate, async (interaction) => {
+    try {
+      await interactionExecute(interaction);
+    } catch (error) {
+      logger.error('FATAL interaction error:', error);
+      try {
+        if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+          await interaction.reply({ content: 'An error occurred. Please try again.', ephemeral: true });
+        }
+      } catch {
+        // Interaction expired
+      }
+    }
+  });
+
+  client.on(Events.GuildCreate, async (guild) => {
+    try {
+      await guildCreateExecute(guild, client);
+    } catch (error) {
+      logger.error('GuildCreate error:', error);
+    }
+  });
+
+  logger.info('Event handlers registered');
+}
