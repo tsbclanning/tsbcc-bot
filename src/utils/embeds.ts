@@ -165,12 +165,12 @@ export function buildChallengePanelEmbed(): [EmbedBuilder, ActionRowBuilder<Butt
   const embed = new EmbedBuilder()
     .setTitle('Challenge a Clan')
     .setDescription('Click below to open a challenge against another clan in your range.\n\nAvailable to Clan Owners, War Managers, and Region Leads.')
-    .setColor(0x5865f2);
+    .setColor(0x2f3136);
 
   const button = new ButtonBuilder()
     .setCustomId(ButtonCustomId.OPEN_CHALLENGE)
     .setLabel('Open a Challenge')
-    .setStyle(ButtonStyle.Primary);
+    .setStyle(ButtonStyle.Secondary);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
   return [embed, row];
