@@ -19,6 +19,44 @@ export async function handleRemoveRL(interaction: ButtonInteraction): Promise<vo
   await handleRemove(interaction, 'Region Lead');
 }
 
+export async function handleResignWM(interaction: ButtonInteraction): Promise<void> {
+  await handleResign(interaction, 'War Manager');
+}
+
+export async function handleResignRL(interaction: ButtonInteraction): Promise<void> {
+  await handleResign(interaction, 'Region Lead');
+}
+
+async function handleResign(interaction: ButtonInteraction, type: string): Promise<void> {
+  // Find clans where user is WM or RL
+  const clans = await Clan.find({ status: 'ACTIVE' });
+  const options: { label: string; description: string; value: string }[] = [];
+
+  for (const clan of clans) {
+    for (const r of clan.regions) {
+      if (type === 'War Manager' && r.warManager === interaction.user.id) {
+        options.push({ label: `${clan.name} ${r.region}`, description: 'Resign as War Manager', value: `${clan.clanId}|${r.region}|WM|self` });
+      }
+      if (type === 'Region Lead' && r.regionLead === interaction.user.id) {
+        options.push({ label: `${clan.name} ${r.region}`, description: 'Resign as Region Lead', value: `${clan.clanId}|${r.region}|RL|self` });
+      }
+    }
+  }
+
+  if (options.length === 0) {
+    await interaction.reply({ content: `You are not a ${type} for any clan.`, ephemeral: true });
+    return;
+  }
+
+  const select = new StringSelectMenuBuilder()
+    .setCustomId(SelectCustomId.REMOVE_ASSIGNMENT)
+    .setPlaceholder(`Select your ${type} position to resign from`)
+    .addOptions(options);
+
+  const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+  await interaction.reply({ content: `Select the ${type} position you want to **resign** from:`, components: [row], ephemeral: true });
+}
+
 async function handleAssign(interaction: ButtonInteraction, type: string): Promise<void> {
   const clans = await Clan.find({ ownerId: interaction.user.id, status: 'ACTIVE' });
   if (clans.length === 0) {

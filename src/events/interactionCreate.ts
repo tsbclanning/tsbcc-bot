@@ -2,7 +2,7 @@ import type { Interaction, ChatInputCommandInteraction, ButtonInteraction, Modal
 import { logger } from '../utils/logger.js';
 import { commands } from '../commands/index.js';
 import { handleOpenChallengeButton } from '../components/buttons/challenge.js';
-import { handleAssignWM, handleAssignRL, handleRemoveWM, handleRemoveRL } from '../components/buttons/wmRl.js';
+import { handleAssignWM, handleAssignRL, handleRemoveWM, handleRemoveRL, handleResignWM, handleResignRL } from '../components/buttons/wmRl.js';
 import { handleCloseTicketButton } from '../components/buttons/closeTicket.js';
 import { handleApproveScore, handleDenyScore } from '../components/buttons/scoreApproval.js';
 import { handleRobloxConfirmYes, handleRobloxConfirmNo, handleRobloxCheckCode } from '../components/buttons/robloxVerify.js';
@@ -61,6 +61,12 @@ async function handleButton(interaction: ButtonInteraction): Promise<void> {
       break;
     case ButtonCustomId.REMOVE_RL:
       await handleRemoveRL(interaction);
+      break;
+    case ButtonCustomId.RESIGN_WM:
+      await handleResignWM(interaction);
+      break;
+    case ButtonCustomId.RESIGN_RL:
+      await handleResignRL(interaction);
       break;
     case ButtonCustomId.CLOSE_TICKET:
       await handleCloseTicketButton(interaction);

@@ -222,6 +222,25 @@ export function buildCwmRemoveEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBui
   return [embed, row];
 }
 
+// ─── CWM2 Resign Embed ───
+export function buildCwm2ResignEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBuilder>] {
+  const embed = new EmbedBuilder()
+    .setTitle('Resign as War Manager / Region Lead')
+    .setDescription([
+      'Use the buttons below to **resign** from your War Manager or Region Lead position.',
+      '',
+      'You will be removed from your role immediately and the clan will be notified.',
+    ].join('\n'))
+    .setColor(0xfee75c);
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_WM).setLabel('Resign as War Manager').setStyle(ButtonStyle.Danger),
+    new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_RL).setLabel('Resign as Region Lead').setStyle(ButtonStyle.Secondary),
+  );
+
+  return [embed, row];
+}
+
 // ─── Verification DM Embed ───
 export function buildVerificationDMEmbed(
   ownerMention: string,
@@ -323,6 +342,76 @@ export function buildRobloxCodeEmbed(username: string, code: string): [EmbedBuil
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId(ButtonCustomId.ROBLOX_CHECK_CODE).setLabel('I\'ve added the code').setStyle(ButtonStyle.Success),
+  );
+
+  return [embed, row];
+}
+
+// ─── Welcome Message Embed ───
+export function buildWelcomeEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBuilder>] {
+  const embed = new EmbedBuilder()
+    .setTitle('Welcome to TSBCC')
+    .setDescription(
+      `Welcome to TSBCC!\n` +
+      `The Strongest Battlegrounds Clanning Community\n` +
+      `Competitive clanning, rankings, and skill based progression\n\n` +
+      `**Important Notice**\n` +
+      `This is an unofficial community not affiliated with Yielding Arts.\n\n` +
+      `• **Rules**, reading them is mandatory.\n` +
+      `• **Branches**, join one for daily tryouts.\n` +
+      `• **Clan Verification**, get your clan officially verified.\n` +
+      `• **Support**, open a ticket for help.\n` +
+      `• **Raid Servers**, we have strong public raids and team helping.\n\n` +
+      `Good luck, dominate the battlegrounds.`,
+    )
+    .setImage('https://media.klipy.com/gifs/teen-gojo-gojo-satoru.gif')
+    .setColor(0x57f287)
+    .setFooter({ text: 'TSBCC, Competitive Clanning, The Strongest Battlegrounds' });
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder().setCustomId(ButtonCustomId.WELCOME_RULES).setLabel('Rules').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId(ButtonCustomId.WELCOME_BRANCHES).setLabel('Branches').setStyle(ButtonStyle.Primary),
+    new ButtonBuilder().setCustomId(ButtonCustomId.WELCOME_CREATE_CLAN).setLabel('Create a Clan').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId(ButtonCustomId.WELCOME_SUPPORT).setLabel('Support / Blacklist').setStyle(ButtonStyle.Secondary),
+  );
+
+  return [embed, row];
+}
+
+// ─── Apply for Clan Verification Embed ───
+export function buildApplyClanVerifyEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBuilder>] {
+  const embed = new EmbedBuilder()
+    .setTitle('Apply for Clan Verification')
+    .setDescription(
+      `**Minimum requirement:**\n` +
+      `100 members (One Region Only)\n` +
+      `Must be the server owner, as in the yellow crown. If you have admin it won't matter.\n` +
+      `Multiple regions: Each region basically costs 100 members. Example: NA + EU + ASIA = 300 members required.\n\n` +
+      `**Please do not ping staff.**\n` +
+      `**If you want to claim ownership, make a ticket and say so (could be from a blacklisted owner or anything) and don't invite the bot in.**\n` +
+      `*(If you change your mind and don't want to make a clan anymore, just say so and we'll delete it.)*\n\n` +
+      `Click the button below to begin your application.`,
+    )
+    .setColor(0x5865f2);
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder().setCustomId(ButtonCustomId.APPLY_CLAN_VERIFY).setLabel('Apply for Clan Verification').setStyle(ButtonStyle.Secondary),
+  );
+
+  return [embed, row];
+}
+
+// ─── Claim Clan Leader Role Embed ───
+export function buildClaimClanLeaderEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBuilder>] {
+  const embed = new EmbedBuilder()
+    .setTitle('Claim Clan Leader Role')
+    .setDescription(
+      `If you left the server as a clan owner on accident, click **Claim** below to restore your clan leader roles.`,
+    )
+    .setColor(0x5865f2);
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder().setCustomId(ButtonCustomId.CLAIM_CLAN_LEADER).setLabel('Claim').setStyle(ButtonStyle.Secondary),
   );
 
   return [embed, row];

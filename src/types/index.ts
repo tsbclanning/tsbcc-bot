@@ -48,6 +48,8 @@ export const ButtonCustomId = {
   ASSIGN_RL: 'btn_assign_rl',
   REMOVE_WM: 'btn_remove_wm',
   REMOVE_RL: 'btn_remove_rl',
+  RESIGN_WM: 'btn_resign_wm',
+  RESIGN_RL: 'btn_resign_rl',
   CLOSE_TICKET: 'btn_close_ticket',
   APPROVE_SCORE: 'btn_approve_score',
   DENY_SCORE: 'btn_deny_score',
@@ -61,6 +63,12 @@ export const ButtonCustomId = {
   DENY_RENAME: 'btn_deny_rename',
   APPROVE_OWNER: 'btn_approve_owner',
   DENY_OWNER: 'btn_deny_owner',
+  APPLY_CLAN_VERIFY: 'btn_apply_clan_verify',
+  CLAIM_CLAN_LEADER: 'btn_claim_clan_leader',
+  WELCOME_RULES: 'btn_welcome_rules',
+  WELCOME_BRANCHES: 'btn_welcome_branches',
+  WELCOME_CREATE_CLAN: 'btn_welcome_create_clan',
+  WELCOME_SUPPORT: 'btn_welcome_support',
 } as const;
 
 export const ModalCustomId = {

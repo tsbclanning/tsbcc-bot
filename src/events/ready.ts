@@ -5,7 +5,7 @@ import { commands } from '../commands/index.js';
 import { initLeaderboards } from '../services/leaderboard.js';
 import { setupClanManagementPanel } from '../services/clanManagement.js';
 import { setupChallengePanel } from '../services/warManagement.js';
-import { setupCwmPanel } from '../services/warManagement.js';
+import { setupCwmPanel, setupCwm2Panel } from '../services/warManagement.js';
 import { REST, Routes } from 'discord.js';
 
 export async function execute(client: Client): Promise<void> {
@@ -56,6 +56,7 @@ export async function execute(client: Client): Promise<void> {
   // Initialize CWM + challenge panels in war management server
   try {
     await setupCwmPanel(client);
+    await setupCwm2Panel(client);
     await setupChallengePanel(client);
   } catch (error) {
     logger.error('Failed to init war management panels:', error);
