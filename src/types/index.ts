@@ -76,6 +76,7 @@ export const ModalCustomId = {
   CLAN_RENAME: 'modal_clan_rename',
   CLAN_OWNER: 'modal_clan_owner',
   CLAN_MERGE: 'modal_clan_merge',
+  CLAN_VERIFY: 'modal_clan_verify',
 } as const;
 
 export const SelectCustomId = {
@@ -86,6 +87,7 @@ export const SelectCustomId = {
   ASSIGN_CLAN: 'select_assign_clan',
   REMOVE_ASSIGNMENT: 'select_remove_assignment',
   REFRESH_REGION: 'select_refresh_region',
+  VERIFY_REGION: 'select_verify_region',
 } as const;
 
 export const ModalInputCustomId = {
@@ -93,6 +95,8 @@ export const ModalInputCustomId = {
   CLAN_NAME: 'input_clan_name',
   NEW_OWNER_ID: 'input_new_owner_id',
   MERGE_TARGET_ID: 'input_merge_target_id',
+  VERIFY_CLAN_NAME: 'input_verify_clan_name',
+  VERIFY_SERVER_ID: 'input_verify_server_id',
   REGION_SELECT: 'input_region',
 } as const;
 

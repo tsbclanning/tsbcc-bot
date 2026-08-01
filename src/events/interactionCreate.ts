@@ -9,10 +9,13 @@ import { handleRobloxConfirmYes, handleRobloxConfirmNo, handleRobloxCheckCode } 
 import { handleGoToServerButton } from '../components/buttons/goToServer.js';
 import { handleAcceptAssignment, handleDenyAssignment } from '../components/buttons/assignment.js';
 import { handleApproveRename, handleDenyRename, handleApproveOwner, handleDenyOwner, handleApproveMerge, handleDenyMerge } from '../components/buttons/approvals.js';
+import { handleApplyClanVerify, handleClaimClanLeader, handleWelcomeRules, handleWelcomeBranches, handleWelcomeCreateClan, handleWelcomeSupport } from '../components/buttons/clanVerify.js';
 import { handleClanManagementSelect } from '../components/selects/clanManagement.js';
 import { handleChallengeFromSelect, handleChallengeTargetSelect } from '../components/selects/challenge.js';
 import { handleAssignRegionSelect, handleAssignClanSelect, handleRemoveAssignmentSelect } from '../components/selects/wmRl.js';
 import { handleRefreshRegionSelect } from '../components/selects/refresh.js';
+import { handleVerifyRegionSelect } from '../components/selects/clanVerify.js';
+import { handleClanVerifyModal } from '../components/modals/clanVerifyModal.js';
 import { handleRenameClanModal, handleSwitchOwnerModal, handleMergeClanModal } from '../components/modals/clanModals.js';
 import { ButtonCustomId, ModalCustomId, SelectCustomId } from '../types/index.js';
 
@@ -89,6 +92,24 @@ async function handleButton(interaction: ButtonInteraction): Promise<void> {
     case ButtonCustomId.GO_TO_SERVER:
       // Link button, no handler needed
       break;
+    case ButtonCustomId.APPLY_CLAN_VERIFY:
+      await handleApplyClanVerify(interaction);
+      break;
+    case ButtonCustomId.CLAIM_CLAN_LEADER:
+      await handleClaimClanLeader(interaction);
+      break;
+    case ButtonCustomId.WELCOME_RULES:
+      await handleWelcomeRules(interaction);
+      break;
+    case ButtonCustomId.WELCOME_BRANCHES:
+      await handleWelcomeBranches(interaction);
+      break;
+    case ButtonCustomId.WELCOME_CREATE_CLAN:
+      await handleWelcomeCreateClan(interaction);
+      break;
+    case ButtonCustomId.WELCOME_SUPPORT:
+      await handleWelcomeSupport(interaction);
+      break;
     case ButtonCustomId.ACCEPT_ASSIGNMENT:
       await handleAcceptAssignment(interaction);
       break;
@@ -126,6 +147,9 @@ async function handleModal(interaction: ModalSubmitInteraction): Promise<void> {
     case ModalCustomId.CLAN_MERGE:
       await handleMergeClanModal(interaction);
       break;
+    case ModalCustomId.CLAN_VERIFY:
+      await handleClanVerifyModal(interaction);
+      break;
     default:
       logger.warn(`Unknown modal customId: ${interaction.customId}`);
   }
@@ -153,6 +177,9 @@ async function handleSelectMenu(interaction: StringSelectMenuInteraction): Promi
       break;
     case SelectCustomId.REFRESH_REGION:
       await handleRefreshRegionSelect(interaction);
+      break;
+    case SelectCustomId.VERIFY_REGION:
+      await handleVerifyRegionSelect(interaction);
       break;
     default:
       logger.warn(`Unknown select menu customId: ${interaction.customId}`);
