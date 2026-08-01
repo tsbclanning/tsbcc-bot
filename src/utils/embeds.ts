@@ -231,7 +231,7 @@ export function buildCwm2ResignEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBu
       '',
       'If you hold the position for more than one clan or region, you\'ll be asked which one to resign from.',
     ].join('\n'))
-    .setColor(0xfee75c);
+    .setColor(0xed4245);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_WM).setLabel('Resign as a Clan War Manager').setStyle(ButtonStyle.Danger),
