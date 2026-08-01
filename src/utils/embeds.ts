@@ -227,15 +227,15 @@ export function buildCwm2ResignEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBu
   const embed = new EmbedBuilder()
     .setTitle('Resign as War Manager / Region Lead')
     .setDescription([
-      'Use the buttons below to **resign** from your War Manager or Region Lead position.',
+      'If you no longer want to serve as a **War Manager** or **Region Lead**, use the buttons below to resign immediately.',
       '',
-      'You will be removed from your role immediately and the clan will be notified.',
+      'If you hold the position for more than one clan or region, you\'ll be asked which one to resign from.',
     ].join('\n'))
     .setColor(0xfee75c);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-    new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_WM).setLabel('Resign as War Manager').setStyle(ButtonStyle.Danger),
-    new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_RL).setLabel('Resign as Region Lead').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_WM).setLabel('Resign as a Clan War Manager').setStyle(ButtonStyle.Danger),
+    new ButtonBuilder().setCustomId(ButtonCustomId.RESIGN_RL).setLabel('Resign as a Region Lead').setStyle(ButtonStyle.Secondary),
   );
 
   return [embed, row];
