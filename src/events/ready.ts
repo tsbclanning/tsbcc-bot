@@ -4,6 +4,7 @@ import { config } from '../config/index.js';
 import { commands } from '../commands/index.js';
 import { initLeaderboards } from '../services/leaderboard.js';
 import { setupClanManagementPanel } from '../services/clanManagement.js';
+import { setupCreateClanPanel, setupWelcomePanel } from '../services/createClanPanel.js';
 import { setupChallengePanel } from '../services/warManagement.js';
 import { setupCwmPanel, setupCwm2Panel } from '../services/warManagement.js';
 import { REST, Routes } from 'discord.js';
@@ -49,6 +50,8 @@ export async function execute(client: Client): Promise<void> {
   // Initialize clan management panel
   try {
     await setupClanManagementPanel(client);
+    await setupCreateClanPanel(client);
+    await setupWelcomePanel(client);
   } catch (error) {
     logger.error('Failed to init clan management panel:', error);
   }
