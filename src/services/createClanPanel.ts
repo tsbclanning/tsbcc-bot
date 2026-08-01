@@ -1,6 +1,6 @@
 import type { Client, TextChannel } from 'discord.js';
 import { config } from '../config/index.js';
-import { buildApplyClanVerifyEmbed, buildClaimClanLeaderEmbed, buildWelcomeEmbed } from '../utils/embeds.js';
+import { buildApplyClanVerifyEmbed, buildClaimClanLeaderEmbed, buildWelcomeEmbed, buildRobloxVerifyPanelEmbed } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
 
 export async function setupCreateClanPanel(client: Client): Promise<void> {
@@ -10,24 +10,18 @@ export async function setupCreateClanPanel(client: Client): Promise<void> {
   const channel = await client.channels.fetch(channelId) as TextChannel | null;
   if (!channel) return;
 
+  // Delete old bot messages and resend fresh
   const messages = await channel.messages.fetch({ limit: 10 });
-  const botMessages = messages.filter((m) => m.author.id === client.user?.id).sorted((a, b) => b.createdTimestamp - a.createdTimestamp);
+  const botMessages = messages.filter((m) => m.author.id === client.user?.id);
+  for (const [, msg] of botMessages) {
+    await msg.delete().catch(() => {});
+  }
 
   const [applyEmbed, applyRow] = buildApplyClanVerifyEmbed();
   const [claimEmbed, claimRow] = buildClaimClanLeaderEmbed();
 
-  const msgArray = [...botMessages.values()];
-
-  if (msgArray.length >= 2) {
-    await msgArray[0].edit({ embeds: [applyEmbed], components: [applyRow] });
-    await msgArray[1].edit({ embeds: [claimEmbed], components: [claimRow] });
-  } else {
-    for (const [, msg] of botMessages) {
-      await msg.delete().catch(() => {});
-    }
-    await channel.send({ embeds: [applyEmbed], components: [applyRow] });
-    await channel.send({ embeds: [claimEmbed], components: [claimRow] });
-  }
+  await channel.send({ embeds: [applyEmbed], components: [applyRow] });
+  await channel.send({ embeds: [claimEmbed], components: [claimRow] });
 
   logger.info('Create clan panel initialized');
 }
@@ -39,16 +33,19 @@ export async function setupWelcomePanel(client: Client): Promise<void> {
   const channel = await client.channels.fetch(channelId) as TextChannel | null;
   if (!channel) return;
 
-  const messages = await channel.messages.fetch({ limit: 5 });
-  const existing = messages.find((m) => m.author.id === client.user?.id);
-
-  const [embed, row] = buildWelcomeEmbed();
-
-  if (existing) {
-    await existing.edit({ embeds: [embed], components: [row] });
-  } else {
-    await channel.send({ embeds: [embed], components: [row] });
+  // Delete old bot messages and resend fresh
+  const messages = await channel.messages.fetch({ limit: 10 });
+  const botMessages = messages.filter((m) => m.author.id === client.user?.id);
+  for (const [, msg] of botMessages) {
+    await msg.delete().catch(() => {});
   }
 
-  logger.info('Welcome panel initialized');
+  const [welcomeEmbed, welcomeRow] = buildWelcomeEmbed();
+  await channel.send({ embeds: [welcomeEmbed], components: [welcomeRow] });
+
+  // Also send Roblox verification panel
+  const [verifyEmbed, verifyRow] = buildRobloxVerifyPanelEmbed();
+  await channel.send({ embeds: [verifyEmbed], components: [verifyRow] });
+
+  logger.info('Welcome + Roblox verify panel initialized');
 }

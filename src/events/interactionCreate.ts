@@ -9,7 +9,7 @@ import { handleRobloxConfirmYes, handleRobloxConfirmNo, handleRobloxCheckCode } 
 import { handleGoToServerButton } from '../components/buttons/goToServer.js';
 import { handleAcceptAssignment, handleDenyAssignment } from '../components/buttons/assignment.js';
 import { handleApproveRename, handleDenyRename, handleApproveOwner, handleDenyOwner, handleApproveMerge, handleDenyMerge } from '../components/buttons/approvals.js';
-import { handleApplyClanVerify, handleClaimClanLeader, handleWelcomeRules, handleWelcomeBranches, handleWelcomeCreateClan, handleWelcomeSupport } from '../components/buttons/clanVerify.js';
+import { handleApplyClanVerify, handleClaimClanLeader, handleWelcomeRules, handleWelcomeBranches, handleWelcomeCreateClan, handleWelcomeSupport, handleRobloxVerifyPanel } from '../components/buttons/clanVerify.js';
 import { handleClanManagementSelect } from '../components/selects/clanManagement.js';
 import { handleChallengeFromSelect, handleChallengeTargetSelect } from '../components/selects/challenge.js';
 import { handleAssignRegionSelect, handleAssignClanSelect, handleRemoveAssignmentSelect } from '../components/selects/wmRl.js';
@@ -109,6 +109,9 @@ async function handleButton(interaction: ButtonInteraction): Promise<void> {
       break;
     case ButtonCustomId.WELCOME_SUPPORT:
       await handleWelcomeSupport(interaction);
+      break;
+    case ButtonCustomId.ROBLOX_VERIFY_PANEL:
+      await handleRobloxVerifyPanel(interaction);
       break;
     case ButtonCustomId.ACCEPT_ASSIGNMENT:
       await handleAcceptAssignment(interaction);

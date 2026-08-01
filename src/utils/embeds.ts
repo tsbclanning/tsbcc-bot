@@ -392,7 +392,7 @@ export function buildApplyClanVerifyEmbed(): [EmbedBuilder, ActionRowBuilder<But
       `*(If you change your mind and don't want to make a clan anymore, just say so and we'll delete it.)*\n\n` +
       `Click the button below to begin your application.`,
     )
-    .setColor(0x5865f2);
+    .setColor(0x2b2d31);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId(ButtonCustomId.APPLY_CLAN_VERIFY).setLabel('Apply for Clan Verification').setStyle(ButtonStyle.Secondary),
@@ -408,10 +408,35 @@ export function buildClaimClanLeaderEmbed(): [EmbedBuilder, ActionRowBuilder<But
     .setDescription(
       `If you left the server as a clan owner on accident, click **Claim** below to restore your clan leader roles.`,
     )
-    .setColor(0x5865f2);
+    .setColor(0x2b2d31);
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId(ButtonCustomId.CLAIM_CLAN_LEADER).setLabel('Claim').setStyle(ButtonStyle.Secondary),
+  );
+
+  return [embed, row];
+}
+
+// ─── Roblox Verification Panel Embed ───
+export function buildRobloxVerifyPanelEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBuilder>] {
+  const embed = new EmbedBuilder()
+    .setTitle('🔗 Roblox Verification')
+    .setDescription(
+      `Link your Roblox account to your Discord and join TSBCC.\n\n` +
+      `**To verify your Roblox account:**\n` +
+      `Click the Verify button below, or use \`/roblox verify\`.\n\n` +
+      `**To main a clan:**\n` +
+      `Use \`/mainclan\` with your clan's secret code.\n\n` +
+      `**Requirements**\n` +
+      `› You must have a Roblox account\n` +
+      `› You must be in the [TSBCC Roblox Group](https://www.roblox.com)\n` +
+      `› You must be able to edit your Roblox bio`,
+    )
+    .setColor(0x5865f2)
+    .setFooter({ text: 'TSBCC • The Strongest Battlegrounds Clanning Community' });
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder().setCustomId(ButtonCustomId.ROBLOX_VERIFY_PANEL).setLabel('Verify').setStyle(ButtonStyle.Success).setEmoji('✅'),
   );
 
   return [embed, row];

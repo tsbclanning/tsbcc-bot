@@ -69,6 +69,7 @@ export const ButtonCustomId = {
   WELCOME_BRANCHES: 'btn_welcome_branches',
   WELCOME_CREATE_CLAN: 'btn_welcome_create_clan',
   WELCOME_SUPPORT: 'btn_welcome_support',
+  ROBLOX_VERIFY_PANEL: 'btn_roblox_verify_panel',
 } as const;
 
 export const ModalCustomId = {

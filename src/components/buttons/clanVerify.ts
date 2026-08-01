@@ -69,3 +69,55 @@ export async function handleWelcomeCreateClan(interaction: ButtonInteraction): P
 export async function handleWelcomeSupport(interaction: ButtonInteraction): Promise<void> {
   await interaction.reply({ content: 'Open a support ticket for help, or check the blacklist channel if you need to appeal.', ephemeral: true });
 }
+
+export async function handleRobloxVerifyPanel(interaction: ButtonInteraction): Promise<void> {
+  // Trigger the roblox verify command
+  const { robloxVerifyCommand } = await import('../../commands/roblox/verify.js');
+  // Create a fake command interaction by calling the command's execute
+  // Since we can't easily do that, let's just reply with instructions
+  const { config } = await import('../../config/index.js');
+  const { generateRobloxVerifyCode } = await import('../../utils/helpers.js');
+  const { Player } = await import('../../database/models/Player.js');
+  const { buildRobloxProfileEmbed } = await import('../../utils/embeds.js');
+
+  const existing = await Player.findOne({ userId: interaction.user.id });
+  if (existing?.verified) {
+    await interaction.reply({ content: 'You are already verified as **' + existing.robloxUsername + '**.', ephemeral: true });
+    return;
+  }
+
+  // Fetch Roblox user by Discord username
+  try {
+    const username = interaction.user.username;
+    const response = await fetch(`${config.roblox.apiUrl}/usernames/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ usernames: [username], excludeBannedUsers: true }),
+    });
+    const data = await response.json() as any;
+
+    if (!data?.data || data.data.length === 0) {
+      await interaction.reply({ content: 'Could not find a Roblox user with a matching username. Please use `/roblox verify` to enter your Roblox username manually.', ephemeral: true });
+      return;
+    }
+
+    const robloxUser = data.data[0];
+    const robloxId = robloxUser.id;
+    const robloxUsername = robloxUser.name;
+
+    const thumbResponse = await fetch(`${config.roblox.thumbApiUrl}?userIds=${robloxId}&size=420x420&format=Png&isCircular=true`);
+    const thumbData = await thumbResponse.json() as any;
+    const avatarUrl = thumbData?.data?.[0]?.imageUrl ?? '';
+
+    await Player.findOneAndUpdate(
+      { userId: interaction.user.id },
+      { robloxUsername, robloxId, robloxAvatarUrl: avatarUrl },
+      { upsert: true },
+    );
+
+    const [embed, row] = buildRobloxProfileEmbed(robloxUsername, robloxId, avatarUrl);
+    await interaction.reply({ embeds: [embed], components: [row], ephemeral: true });
+  } catch {
+    await interaction.reply({ content: 'An error occurred. Please use `/roblox verify` instead.', ephemeral: true });
+  }
+}
