@@ -165,7 +165,7 @@ export function buildChallengePanelEmbed(): [EmbedBuilder, ActionRowBuilder<Butt
   const embed = new EmbedBuilder()
     .setTitle('Challenge a Clan')
     .setDescription('Click below to open a challenge against another clan in your range.\n\nAvailable to Clan Owners, War Managers, and Region Leads.')
-    .setColor(0x000000);
+    
 
   const button = new ButtonBuilder()
     .setCustomId(ButtonCustomId.OPEN_CHALLENGE)
@@ -392,7 +392,7 @@ export function buildApplyClanVerifyEmbed(): [EmbedBuilder, ActionRowBuilder<But
       `*(If you change your mind and don't want to make a clan anymore, just say so and we'll delete it.)*\n\n` +
       `Click the button below to begin your application.`,
     )
-    .setColor(0x000000);
+    
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId(ButtonCustomId.APPLY_CLAN_VERIFY).setLabel('Apply for Clan Verification').setStyle(ButtonStyle.Secondary),
@@ -408,7 +408,7 @@ export function buildClaimClanLeaderEmbed(): [EmbedBuilder, ActionRowBuilder<But
     .setDescription(
       `If you left the server as a clan owner on accident, click **Claim** below to restore your clan leader roles.`,
     )
-    .setColor(0x000000);
+    
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder().setCustomId(ButtonCustomId.CLAIM_CLAN_LEADER).setLabel('Claim').setStyle(ButtonStyle.Secondary),

@@ -20,7 +20,6 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
 
   logger.info(`Bot joined clan server ${guild.name} (${guild.id}) for verification of clan ${verification.clanName}`);
 
-  // Fetch all members to check for bots
   await guild.members.fetch();
   const totalMembers = guild.memberCount;
   const botMembers = guild.members.cache.filter((m) => m.user.bot).size;
@@ -31,34 +30,31 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
 
   logger.info(`Verification check: ${guild.name} — ${totalMembers} total, ${botMembers} bots, ${realMembers} real members`);
 
-  // Anti-bot check: if more than 10% are bots, deny
   const botPercentage = totalMembers > 0 ? (botMembers / totalMembers) * 100 : 100;
   if (botPercentage > 10) {
-    try {
-      const owner = await client.users.fetch(verification.ownerId);
-      await owner.send(`❌ Your clan **${verification.clanName}** could not be verified. Your server has too many bot accounts (${botMembers} bots out of ${totalMembers} members). Please remove bot accounts and try again.`);
-    } catch { /* DM failed */ }
-    verification.status = 'DENIED';
-    await verification.save();
+    await denyVerification(client, verification, `too many bot accounts (${botMembers} bots out of ${totalMembers} members)`);
     await guild.leave();
     return;
   }
 
-  // Check minimum real member requirement
   if (realMembers < config.settings.minClanMembers) {
-    try {
-      const owner = await client.users.fetch(verification.ownerId);
-      await owner.send(`❌ Your clan **${verification.clanName}** could not be verified. Your server has ${realMembers} real members (excluding ${botMembers} bots), but the minimum is ${config.settings.minClanMembers}.`);
-    } catch { /* DM failed */ }
-    verification.status = 'DENIED';
-    await verification.save();
+    const regionCount = 1;
+    await denyVerification(client, verification, `Your server has **${realMembers}** members. You applied for ${regionCount} region(s) which requires **${config.settings.minClanMembers}** members. Either grow your server to 100+ members, or reduce your region selection and re-apply.`);
     await guild.leave();
     return;
   }
 
-  // Auto-approve — 100+ real members, not many bots
+  // Check if name is already taken
+  const existingClan = await Clan.findOne({ name: { $regex: new RegExp(`^${verification.clanName}$`, 'i') }, status: 'ACTIVE' });
+  if (existingClan) {
+    await denyVerification(client, verification, 'name already taken');
+    await guild.leave();
+    return;
+  }
+
+  // Auto-approve
   await guild.leave();
-  logger.info(`Verification check complete for ${verification.clanName} (${realMembers} real members, ${botMembers} bots). Auto-approved. Bot left the clan server.`);
+  logger.info(`Verification approved for ${verification.clanName} (${realMembers} real members, ${botMembers} bots).`);
 
   verification.status = 'APPROVED';
   await verification.save();
@@ -78,7 +74,6 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
     }],
   });
 
-  // DM the owner with verification success
   try {
     const owner = await client.users.fetch(verification.ownerId);
     const warInvite = 'https://discord.gg/' + config.war.guildId;
@@ -89,8 +84,30 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
   logger.info(`Clan ${clan.name} verified and added to ${verification.region} leaderboard.`);
 }
 
+async function denyVerification(client: Client, verification: any, reason: string): Promise<void> {
+  verification.status = 'DENIED';
+  await verification.save();
+
+  // Try to DM the owner
+  try {
+    const owner = await client.users.fetch(verification.ownerId);
+    await owner.send(`Hey, couldn't DM you your denial reason for **${verification.clanName}** but you have been denied for: ${reason}`);
+  } catch { /* DM failed */ }
+
+  // Post denial in the create clan channel
+  try {
+    const channel = await client.channels.fetch(config.community.channels.denial || config.community.channels.createClan).catch(() => null);
+    if (channel?.isTextBased()) {
+      await (channel as any).send({
+        content: `Hey, couldn't DM you your denial reason for **${verification.clanName}** but you have been denied for: ${reason}`,
+        allowedMentions: { users: [verification.ownerId] },
+      });
+    }
+  } catch { /* channel not found */ }
+}
+
 async function getNextRank(region: string): Promise<number> {
   const clans = await Clan.find({ 'regions.region': region, status: 'ACTIVE' });
-  const ranks = clans.flatMap((c) => c.regions.filter((r) => r.region === region).map((r) => r.rank));
+  const ranks = clans.flatMap((c: any) => c.regions.filter((r: any) => r.region === region).map((r: any) => r.rank));
   return ranks.length > 0 ? Math.max(...ranks) + 1 : 1;
 }

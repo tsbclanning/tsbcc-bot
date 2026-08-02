@@ -56,6 +56,7 @@ export const config = {
       challengeRules: process.env.CHANNEL_CHALLENGE_RULES ?? '',
       modLogs: process.env.CHANNEL_MOD_LOGS ?? '',
       createClan: process.env.CHANNEL_CREATE_CLAN ?? '',
+      denial: process.env.CHANNEL_DENIAL ?? '',
     },
   },
 
