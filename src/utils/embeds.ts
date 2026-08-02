@@ -383,13 +383,12 @@ export function buildApplyClanVerifyEmbed(): [EmbedBuilder, ActionRowBuilder<But
   const embed = new EmbedBuilder()
     .setTitle('Apply for Clan Verification')
     .setDescription(
-      `Minimum requirement:\n` +
-      `> **100 members (One Region Only)**\n` +
+      `**Minimum requirement:**\n` +
+      `> 100 members (One Region Only)\n` +
       `> Must be the server owner, as in the yellow crown. If you have admin it won't matter.\n` +
-      `> Multiple regions: Each region basically costs 100 members.\n` +
-      `> Example: NA + EU + ASIA = 300 members required.\n\n` +
+      `> Multiple regions: Each region basically costs 100 members. Example: NA + EU + ASIA = 300 members required.\n\n` +
       `**Please do not ping staff.**\n` +
-      `**If you want to claim ownership**, make a ticket and say so (could be from a blacklisted owner or anything) and don't invite the bot in.\n` +
+      `**If you want to claim ownership, make a ticket and say so (could be from a blacklisted owner or anything) and don't invite the bot in.**\n` +
       `*(If you change your mind and don't want to make a clan anymore, just say so and we'll delete it.)*\n\n` +
       `Click the button below to begin your application.`,
     )
