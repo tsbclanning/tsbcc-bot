@@ -18,7 +18,7 @@ export async function handleAssignRegionSelect(interaction: StringSelectMenuInte
 
   const input = new TextInputBuilder()
     .setCustomId('assign_user_id')
-    .setLabel(`Discord User ID of the person to assign as ${type}`)
+    .setLabel(`Discord User ID to assign as ${type}`)
     .setStyle(TextInputStyle.Short)
     .setRequired(true);
 
