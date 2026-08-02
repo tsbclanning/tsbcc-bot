@@ -16,17 +16,15 @@ export async function setupClanManagementPanel(client: Client): Promise<void> {
     return;
   }
 
-  // Check if panel already exists
+  // Delete old messages and resend fresh
   const messages = await channel.messages.fetch({ limit: 5 });
-  const existing = messages.find((m) => m.author.id === client.user?.id);
+  const botMessages = messages.filter((m) => m.author.id === client.user?.id);
+  for (const [, msg] of botMessages) {
+    await msg.delete().catch(() => {});
+  }
 
   const [embed, row] = buildClanManagementEmbed();
-
-  if (existing) {
-    await existing.edit({ embeds: [embed], components: [row] });
-  } else {
-    await channel.send({ embeds: [embed], components: [row] });
-  }
+  await channel.send({ embeds: [embed], components: [row] });
 
   logger.info('Clan management panel initialized');
 }
