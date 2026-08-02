@@ -383,7 +383,7 @@ export function buildApplyClanVerifyEmbed(): [EmbedBuilder, ActionRowBuilder<But
   const embed = new EmbedBuilder()
     .setTitle('Apply for Clan Verification')
     .setDescription(
-      `**Minimum requirement:**\n` +
+      `Minimum requirement:\n` +
       `> **100 members (One Region Only)**\n` +
       `> Must be the server owner, as in the yellow crown. If you have admin it won't matter.\n` +
       `> Multiple regions: Each region basically costs 100 members.\n` +
