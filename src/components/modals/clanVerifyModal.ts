@@ -1,6 +1,5 @@
 import type { ModalSubmitInteraction } from 'discord.js';
 import { Verification } from '../../database/models/Verification.js';
-import { generateMainerCode } from '../../utils/helpers.js';
 import { logger } from '../../utils/logger.js';
 
 export async function handleClanVerifyModal(interaction: ModalSubmitInteraction): Promise<void> {
@@ -15,7 +14,6 @@ export async function handleClanVerifyModal(interaction: ModalSubmitInteraction)
   }
 
   const regionList = regions.split(', ');
-  const code = generateMainerCode();
 
   for (const region of regionList) {
     const verification = await Verification.create({
@@ -24,7 +22,7 @@ export async function handleClanVerifyModal(interaction: ModalSubmitInteraction)
       ownerId: interaction.user.id,
       serverId,
       region,
-      code,
+      code: '',
       status: 'PENDING',
     });
   }
@@ -33,7 +31,7 @@ export async function handleClanVerifyModal(interaction: ModalSubmitInteraction)
   delete (globalThis as any).verifyRegions[interaction.user.id];
 
   await interaction.reply({
-    content: `**Verification started for ${clanName}**\nRegions: ${regions}\n\nYour verification code is: **${code}**\n\nPlease put this code in your clan server's topic/description and invite the bot. The bot will join, check your member count (minimum 100 per region), and then leave. If your clan meets the requirements, it will be automatically verified.`,
+    content: `**Verification started for ${clanName}**\nRegions: ${regions}\n\nPlease invite the bot to your clan server. The bot will join, check your member count (minimum 100 real members per region), and then leave automatically. If your clan meets the requirements, it will be verified and you'll receive a mainer code via DM.`,
     ephemeral: true,
   });
 
