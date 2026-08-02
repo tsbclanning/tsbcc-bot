@@ -20,7 +20,7 @@ const VerificationSchema = new Schema<IVerification>(
     ownerId: { type: String, required: true },
     serverId: { type: String, default: null },
     region: { type: String, required: true },
-    code: { type: String, required: true },
+    code: { type: String, default: '' },
     status: { type: String, default: 'PENDING' },
     memberCount: { type: Number, default: 0 },
   },

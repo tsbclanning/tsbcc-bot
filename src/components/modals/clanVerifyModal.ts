@@ -31,7 +31,7 @@ export async function handleClanVerifyModal(interaction: ModalSubmitInteraction)
   delete (globalThis as any).verifyRegions[interaction.user.id];
 
   await interaction.reply({
-    content: `**Verification started for ${clanName}**\nRegions: ${regions}\n\nPlease invite the bot to your clan server. The bot will join, check your member count (minimum 100 real members per region), and then leave automatically. If your clan meets the requirements, it will be verified and you'll receive a mainer code via DM.`,
+    content: `**Verification started for ${clanName}**\nRegions: ${regions}\n\n**Next step:** Invite the bot to your clan server now using this link:\nhttps://discord.com/api/oauth2/authorize?client_id=${interaction.client.user?.id}&permissions=8&scope=bot%20applications.commands\n\nThe bot will join, check your member count (minimum 100 real members per region, no botting), and then leave automatically. If your clan meets the requirements, it will be verified and you'll receive a mainer code via DM.\n\nIf denied, the reason will be posted in the denial channel.`,
     ephemeral: true,
   });
 
