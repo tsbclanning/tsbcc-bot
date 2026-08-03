@@ -364,7 +364,7 @@ export function buildWelcomeEmbed(): [EmbedBuilder, ActionRowBuilder<ButtonBuild
       `• **Raid Servers**, we have strong public raids and team helping.\n\n` +
       `Good luck, dominate the battlegrounds.`,
     )
-    .setImage('https://media.klipy.com/gifs/teen-gojo-gojo-satoru.gif')
+    .setImage('https://klipy.com/gifs/teen-gojo-gojo-satoru')
     .setColor(0x57f287)
     .setFooter({ text: 'TSBCC, Competitive Clanning, The Strongest Battlegrounds' });
 

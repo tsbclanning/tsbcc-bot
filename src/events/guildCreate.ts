@@ -30,16 +30,18 @@ export async function execute(guild: Guild, client: Client): Promise<void> {
 
   logger.info(`Verification check: ${guild.name} — ${totalMembers} total, ${botMembers} bots, ${realMembers} real members`);
 
+  // Check if more than 15% are bots
   const botPercentage = totalMembers > 0 ? (botMembers / totalMembers) * 100 : 100;
-  if (botPercentage > 10) {
-    await denyVerification(client, verification, `too many bot accounts (${botMembers} bots out of ${totalMembers} members)`);
+  if (botPercentage > 15) {
+    await denyVerification(client, verification, `Your server has too many bots (**${botPercentage.toFixed(0)}%** of members are bots). Remove bot accounts and re-apply.`);
     await guild.leave();
     return;
   }
 
   if (realMembers < config.settings.minClanMembers) {
-    const regionCount = 1;
-    await denyVerification(client, verification, `Your server has **${realMembers}** members. You applied for ${regionCount} region(s) which requires **${config.settings.minClanMembers}** members. Either grow your server to 100+ members, or reduce your region selection and re-apply.`);
+    // Count how many regions they applied for
+    const regionCount = await Verification.countDocuments({ ownerId: verification.ownerId, status: 'PENDING' });
+    await denyVerification(client, verification, `Your server has **${realMembers}** members. You applied for **${regionCount}** region(s) which requires **${config.settings.minClanMembers}** members. Either grow your server to 100+ members, or reduce your region selection and re-apply.`);
     await guild.leave();
     return;
   }
@@ -94,12 +96,12 @@ async function denyVerification(client: Client, verification: any, reason: strin
     await owner.send(`Hey, couldn't DM you your denial reason for **${verification.clanName}** but you have been denied for: ${reason}`);
   } catch { /* DM failed */ }
 
-  // Post denial in the create clan channel
+  // Post denial in the TL (denial) channel
   try {
     const channel = await client.channels.fetch(config.community.channels.denial || config.community.channels.createClan).catch(() => null);
     if (channel?.isTextBased()) {
       await (channel as any).send({
-        content: `Hey, couldn't DM you your denial reason for **${verification.clanName}** but you have been denied for: ${reason}`,
+        content: `<@${verification.ownerId}> Hey, couldn't DM you your denial reason for **${verification.clanName}** but you have been denied for: ${reason}`,
         allowedMentions: { users: [verification.ownerId] },
       });
     }

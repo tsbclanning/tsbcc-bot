@@ -35,6 +35,7 @@ import { robloxForceunverifyCommand } from './roblox/forceunverify.js';
 import { robloxWhoisCommand } from './roblox/whois.js';
 import { callCommand } from './admin/call.js';
 import { sayCommand } from './admin/say.js';
+import { testwelcomeCommand } from './admin/testwelcome.js';
 
 export const commands: Command[] = [
   // Clan
@@ -85,4 +86,5 @@ export const commands: Command[] = [
   // Admin
   callCommand,
   sayCommand,
+  testwelcomeCommand,
 ];

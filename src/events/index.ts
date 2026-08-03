@@ -4,6 +4,7 @@ import { logger } from '../utils/logger.js';
 import { execute as readyExecute } from './ready.js';
 import { execute as interactionExecute } from './interactionCreate.js';
 import { execute as guildCreateExecute } from './guildCreate.js';
+import { execute as guildMemberAddExecute } from './guildMemberAdd.js';
 
 export function registerEvents(client: Client): void {
   client.once(Events.ClientReady, (...args) => readyExecute(...args));
@@ -28,6 +29,14 @@ export function registerEvents(client: Client): void {
       await guildCreateExecute(guild, client);
     } catch (error) {
       logger.error('GuildCreate error:', error);
+    }
+  });
+
+  client.on(Events.GuildMemberAdd, async (member) => {
+    try {
+      await guildMemberAddExecute(member);
+    } catch (error) {
+      logger.error('GuildMemberAdd error:', error);
     }
   });
 
